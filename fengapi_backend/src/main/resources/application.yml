@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: fengapi_backend
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/fengapi
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: mulansql
+  # 支持 swagger3
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
+
+server:
+  port: 8080
+
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
+      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+fengapi:
+  client:
+    access-key: mulan
+    secret-key: mulanhaoshuai
+dubbo:
+  application:
+    name: dubbo-fengapi-backend-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://localhost:8848

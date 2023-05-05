@@ -1,0 +1,6 @@
+server:
+  port: 8110
+fengapi:
+  client:
+    access-key: 9c6f7a8eef571db85ad454350c074589
+    secret-key: 9ce298d5758fce251abc87fdab7a0b21
