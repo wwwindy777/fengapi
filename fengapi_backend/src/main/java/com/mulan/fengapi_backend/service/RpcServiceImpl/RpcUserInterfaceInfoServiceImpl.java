@@ -2,6 +2,8 @@ package com.mulan.fengapi_backend.service.RpcServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.mulan.fengapi_backend.common.ErrorCode;
+import com.mulan.fengapi_backend.exception.BusinessException;
 import com.mulan.fengapi_backend.model.entity.UserInterfaceInfo;
 import com.mulan.fengapi_backend.service.UserInterfaceInfoService;
 import com.mulan.fengapi_common.service.RpcUserInterfaceInfoService;
@@ -21,16 +23,17 @@ public class RpcUserInterfaceInfoServiceImpl implements RpcUserInterfaceInfoServ
     private UserInterfaceInfoService userInterfaceInfoService;
     /**
      * 更新接口调用次数
-     * @param userId
-     * @param interfaceInfoId
+     * @param userInterfaceInfoId
      * @return
      */
     @Override
-    public boolean invokeCountUpdate(Long userId, Long interfaceInfoId) {
+    public boolean invokeCountUpdate(Long userInterfaceInfoId) {
+        if (userInterfaceInfoId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
         UpdateWrapper<UserInterfaceInfo> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.setSql("totalNum = totalNum + 1 and leftNum = leftNum - 1")
-                .eq("userId",userId)
-                .eq("interfaceInfoId",interfaceInfoId);
+        updateWrapper.eq("id", userInterfaceInfoId);
+        updateWrapper.setSql("leftNum = leftNum - 1, totalNum = totalNum + 1");
         return userInterfaceInfoService.update(updateWrapper);
     }
 

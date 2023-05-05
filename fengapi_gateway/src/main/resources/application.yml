@@ -27,10 +27,6 @@ spring:
             - Path=/test/**
   main:
     web-application-type: reactive
-fengapi:
-  client:
-    access-key: mulan
-    secret-key: 123456
 dubbo:
   application:
     name: dubbo-fengapi-gateway-consumer

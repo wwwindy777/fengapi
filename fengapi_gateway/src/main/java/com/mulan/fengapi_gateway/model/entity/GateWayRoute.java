@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
- * GateWay路由（没有filter）
+ * GateWay路由实体类（没有filter）
  * @author wwwwind
  */
 @Data

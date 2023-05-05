@@ -14,8 +14,10 @@ public class Test {
         FengApiClient fengApiClient = new FengApiClient("9c6f7a8eef571db85ad454350c074589", "9ce298d5758fce251abc87fdab7a0b21");
         String url = "http://localhost:8666/test/post";
         HashMap<String, Object> body = new HashMap<>();
-        body.put("userName", "clientTest");
-        String res = fengApiClient.postApiRequest(url, "1", body);
+        body.put("text", "clientTest");
+        //String res = fengApiClient.postApiRequest("getUser", body);
+        String res = fengApiClient.getApiRequest("getText",body);
+
         System.out.println(res);
         long l1 = System.currentTimeMillis();
         System.out.println("调用接口耗时：" + (l1-l));

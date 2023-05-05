@@ -1,5 +1,6 @@
 package com.mulan.fengapi_backend.service.RpcServiceImpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mulan.fengapi_backend.service.InterfaceInfoService;
 import com.mulan.fengapi_common.model.entity.InterfaceInfo;
 import com.mulan.fengapi_common.service.RpcInterfaceInfoService;
@@ -18,13 +19,15 @@ public class RpcInterfaceInfoServiceImpl implements RpcInterfaceInfoService {
     @Resource
     private InterfaceInfoService interfaceInfoService;
     @Override
-    public InterfaceInfo getInterfaceInfoById(Long id) {
-        com.mulan.fengapi_backend.model.entity.InterfaceInfo byId = interfaceInfoService.getById(id);
-        if (byId == null){
+    public InterfaceInfo getInterfaceInfoByName(String name) {
+        QueryWrapper<com.mulan.fengapi_backend.model.entity.InterfaceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name",name);
+        com.mulan.fengapi_backend.model.entity.InterfaceInfo byName = interfaceInfoService.getOne(queryWrapper);
+        if (byName == null){
             return null;
         }
         InterfaceInfo interfaceInfo = new InterfaceInfo();
-        BeanUtils.copyProperties(byId,interfaceInfo);
+        BeanUtils.copyProperties(byName,interfaceInfo);
         return interfaceInfo;
     }
 }

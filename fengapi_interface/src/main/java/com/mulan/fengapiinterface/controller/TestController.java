@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/api")
 public class TestController {
-    @GetMapping()
+    @GetMapping("/getText")
     public String getTest(String text) {
         return "get：" + text;
     }
@@ -19,7 +19,7 @@ public class TestController {
         return "post：" + message;
     }
 
-    @PostMapping("/post")
+    @PostMapping("/getUser")
     public String postBodyTest(@RequestBody User user, HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
         System.out.println("成功");
