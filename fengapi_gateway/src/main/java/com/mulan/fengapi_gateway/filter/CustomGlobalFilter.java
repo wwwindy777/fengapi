@@ -122,7 +122,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         // 所以验证完签名后该过滤器就要返回，处理response只能交给下个过滤器做，目前还没发现其他方法
         String method = request.getMethodValue();
         if (HttpMethod.POST.name().equalsIgnoreCase(method)) {
-
             ModifyRequestBodyGatewayFilterFactory.Config modifyRequestConfig = new ModifyRequestBodyGatewayFilterFactory.Config()
                     .setContentType(ContentType.APPLICATION_JSON.getMimeType())
                     .setRewriteFunction(Map.class, Map.class, (exchange1, originalRequestBody) -> {

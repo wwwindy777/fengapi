@@ -1,6 +1,8 @@
 package com.mulan.fengapi_backend.model.dto.interfaceInfo;
 
+import com.mulan.fengapi_backend.common.PageRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -8,9 +10,9 @@ import java.io.Serializable;
  * 查询请求
  * @author wwwwind
  */
-//@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class InterfaceInfoQueryRequest implements Serializable {
+public class InterfaceInfoQueryRequest extends PageRequest implements Serializable {
 
     private static final long serialVersionUID = -6482106868436423091L;
     /**

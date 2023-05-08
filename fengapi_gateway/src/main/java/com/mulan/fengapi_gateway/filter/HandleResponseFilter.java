@@ -2,6 +2,7 @@ package com.mulan.fengapi_gateway.filter;
 
 import com.mulan.fengapi_common.service.RpcUserInterfaceInfoService;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.reactivestreams.Publisher;
@@ -21,8 +22,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,7 +62,7 @@ public class HandleResponseFilter implements GlobalFilter, Ordered {
                 ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
                     // 等调用完转发的接口后才会执行
                     @Override
-                    public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                    public Mono<Void> writeWith(@NonNull  Publisher<? extends DataBuffer> body) {
                         log.info("body instanceof Flux: {}", (body instanceof Flux));
                         if (body instanceof Flux) {
                             Flux<? extends DataBuffer> fluxBody = Flux.from(body);
@@ -86,11 +85,7 @@ public class HandleResponseFilter implements GlobalFilter, Ordered {
                                         dataBuffer.read(content);
                                         DataBufferUtils.release(dataBuffer);//释放掉内存
                                         // 构建日志
-                                        StringBuilder sb2 = new StringBuilder(200);
-                                        List<Object> rspArgs = new ArrayList<>();
-                                        rspArgs.add(originalResponse.getStatusCode());
                                         String data = new String(content, StandardCharsets.UTF_8); //data
-                                        sb2.append(data);
                                         // 打印日志
                                         log.info("响应结果：" + data);
                                         return bufferFactory.wrap(content);

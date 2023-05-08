@@ -1,6 +1,7 @@
 package com.mulan.fengapi_backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mulan.fengapi_backend.annotation.AuthCheck;
 import com.mulan.fengapi_backend.common.*;
 import com.mulan.fengapi_backend.constant.UserConstant;
@@ -122,15 +123,17 @@ public class InterfaceInfoController {
      */
     @GetMapping("/searchList")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    //TODO：1. 增加分页查询
-    public BaseResponse<List<InterfaceInfo>> getInterfaceInfoList(InterfaceInfoQueryRequest queryRequest) {
+    public BaseResponse<Page<InterfaceInfo>> getInterfaceInfoList(InterfaceInfoQueryRequest queryRequest) {
         InterfaceInfo interfaceInfoQuery = new InterfaceInfo();
         if (queryRequest != null) {
             BeanUtils.copyProperties(queryRequest, interfaceInfoQuery);
         }
+        assert queryRequest != null;
+        long current = queryRequest.getCurrentPage();
+        long size = queryRequest.getPageSize();
         QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>(interfaceInfoQuery);
-        List<InterfaceInfo> interfaceInfoList = interfaceInfoService.list(queryWrapper);
-        return ResultUtils.success(interfaceInfoList);
+        Page<InterfaceInfo> page = interfaceInfoService.page(new Page<>(current,size), queryWrapper);
+        return ResultUtils.success(page);
     }
     /**
      * 获取接口列表（前台）

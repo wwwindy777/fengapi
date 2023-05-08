@@ -220,7 +220,7 @@ public class UserController {
         User userQuery = new User();
         if (userQueryRequest != null) {
             BeanUtils.copyProperties(userQueryRequest, userQuery);
-            current = userQueryRequest.getCurrent();
+            current = userQueryRequest.getCurrentPage();
             size = userQueryRequest.getPageSize();
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
