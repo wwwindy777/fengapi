@@ -14,6 +14,5 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
     void verifyInterfaceInfo(InterfaceInfo interfaceInfo,boolean isAdd);
     String mapUrl(String interfaceName);
     InterfaceInfoVO getInterfaceInfoVO(InterfaceInfo info);
-
     boolean onlineInterfaceInfo(Long id);
 }

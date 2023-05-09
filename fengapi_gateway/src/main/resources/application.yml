@@ -21,10 +21,10 @@ spring:
           uri: http://localhost:8110
           predicates:
             - Path=/api/**
-        - id: api_route
-          uri: http://localhost:8110
-          predicates:
-            - Path=/test/**
+#        - id: api_route
+#          uri: http://localhost:8110
+#          predicates:
+#            - Path=/test/**
   main:
     web-application-type: reactive
 dubbo:

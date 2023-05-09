@@ -12,6 +12,10 @@ spring:
   mvc:
     path match:
       matching-strategy: ant_path_matcher
+  # 全局日期返回格式
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
 
 server:
   port: 8080

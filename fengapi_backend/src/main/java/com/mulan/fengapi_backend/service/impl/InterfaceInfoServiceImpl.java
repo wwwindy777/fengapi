@@ -5,11 +5,11 @@ import com.mulan.fengapi_backend.common.ErrorCode;
 import com.mulan.fengapi_backend.common.TestInterfaceUtils;
 import com.mulan.fengapi_backend.constant.CommonConstant;
 import com.mulan.fengapi_backend.exception.BusinessException;
+import com.mulan.fengapi_backend.mapper.InterfaceInfoMapper;
 import com.mulan.fengapi_backend.model.VO.InterfaceInfoVO;
 import com.mulan.fengapi_backend.model.entity.InterfaceInfo;
 import com.mulan.fengapi_backend.model.enums.InterfaceInfoStatusEnum;
 import com.mulan.fengapi_backend.service.InterfaceInfoService;
-import com.mulan.fengapi_backend.mapper.InterfaceInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,6 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
      */
     @Override
     public String mapUrl(String interfaceName) {
-        //网关地址拼接接口id，后期可以优化
         return CommonConstant.API_GATEWAY_URL + interfaceName;
     }
 

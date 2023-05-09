@@ -14,7 +14,6 @@ import com.mulan.fengapi_backend.model.entity.InterfaceInfo;
 import com.mulan.fengapi_backend.model.entity.User;
 import com.mulan.fengapi_backend.model.enums.InterfaceInfoStatusEnum;
 import com.mulan.fengapi_backend.service.InterfaceInfoService;
-import com.mulan.fengapiclient.client.FengApiClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +27,10 @@ import java.util.stream.Collectors;
  * @author wwwwind
  */
 @RestController
-@RequestMapping("interfaceInfo/")
+@RequestMapping("/interfaceInfo")
 public class InterfaceInfoController {
     @Resource
     private InterfaceInfoService interfaceInfoService;
-    @Resource
-    private FengApiClient fengApiClient;
 
     /**
      * 添加接口

@@ -24,7 +24,7 @@ import java.util.List;
  * @author wwwwind
  */
 @RestController
-@RequestMapping("userInterfaceInfo/")
+@RequestMapping("/userInterfaceInfo")
 public class UserInterfaceInfoController {
     @Resource
     private UserInterfaceInfoService userInterfaceInfoService;
