@@ -54,5 +54,4 @@ public class GatewayRouteUtils {
         definition.setUri(uri);
         return definition;
     }
-
 }

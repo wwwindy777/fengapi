@@ -1,5 +1,6 @@
 package com.mulan.fengapi_backend.service;
 
+import com.mulan.fengapi_backend.model.dto.user.UserUpdateRequest;
 import com.mulan.fengapi_backend.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -31,6 +32,8 @@ public interface UserService extends IService<User> {
      * @return 脱敏后的用户信息
      */
     User userLogin(String userAccount, String userPassword, HttpServletRequest request);
+
+    Boolean updateUser(UserUpdateRequest updateRequest,HttpServletRequest request);
 
     /**
      * 获取当前登录用户

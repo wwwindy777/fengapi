@@ -63,7 +63,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -73,7 +73,9 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.userLogin(userAccount, userPassword, request);
-        return ResultUtils.success(user);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return ResultUtils.success(userVO);
     }
 
     /**
@@ -154,15 +156,12 @@ public class UserController {
      * @return
      */
     @PostMapping("/update")
-    //TODO：仅管理员可以修改用户角色，判断字段是否为空
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = new User();
-        BeanUtils.copyProperties(userUpdateRequest, user);
-        boolean result = userService.updateById(user);
-        return ResultUtils.success(result);
+        Boolean res = userService.updateUser(userUpdateRequest, request);
+        return ResultUtils.success(res);
     }
 
     /**
@@ -173,7 +172,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/get")
-    public BaseResponse<UserVO> getUserById(int id, HttpServletRequest request) {
+    public BaseResponse<UserVO> getUserById(Integer id, HttpServletRequest request) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

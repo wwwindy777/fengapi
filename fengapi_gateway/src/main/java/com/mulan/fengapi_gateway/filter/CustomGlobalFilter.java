@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Data
@@ -116,7 +117,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             return handleNoAuth(response);
         }
         //4.3 存nonce设置过期时间
-        stringRedisTemplate.opsForValue().set(NONCE_KEY + nonce, "", 300000);
+        stringRedisTemplate.opsForValue().set(NONCE_KEY + nonce, "nonce", 300, TimeUnit.SECONDS);
         //4.4 验证签名
         // 因为验证签名要取到body，gateway取body操作比较复杂且取完后需要做一系列操作
         // 所以验证完签名后该过滤器就要返回，处理response只能交给下个过滤器做，目前还没发现其他方法

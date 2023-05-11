@@ -1,5 +1,7 @@
 package com.mulan.fengapi_backend.service;
 
+import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteAddRequest;
+import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteUpdateRequest;
 import com.mulan.fengapi_backend.model.entity.InterfaceRoute;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -11,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface InterfaceRouteService extends IService<InterfaceRoute> {
 
     void verifyGatewayRoute(InterfaceRoute interfaceRoute, boolean isAdd);
+    InterfaceRoute genInterfaceRoute(GatewayRouteAddRequest addRequest);
+    InterfaceRoute genInterfaceRoute(GatewayRouteUpdateRequest updateRequest,InterfaceRoute oldRoute);
 }

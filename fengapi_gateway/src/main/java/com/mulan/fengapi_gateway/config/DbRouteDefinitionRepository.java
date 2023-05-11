@@ -9,8 +9,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.cloud.gateway.support.NotFoundException;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,35 +17,22 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 从数据库加载路由
+ */
 @Component
-public class DbRouteDefinitionRepository implements RouteDefinitionRepository, ApplicationEventPublisherAware {
+public class DbRouteDefinitionRepository implements RouteDefinitionRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbRouteDefinitionRepository.class);
-    private ApplicationEventPublisher publisher;
     private final List<RouteDefinition> routeDefinitionList = new ArrayList<>();
     @DubboReference
     RpcGatewayRouteService rpcGatewayRouteService;
-
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher publisher) {
-        this.publisher = publisher;
-    }
-
     @PostConstruct
     public void init() {
         load();
     }
 
-    ///**
-    // * 监听事件刷新配置
-    // */
-    //@EventListener
-    //public void listenEvent(RouteConfigRefreshEvent event) {
-    //    load();
-    //    this.publisher.publishEvent(new RefreshRoutesEvent(this));
-    //}
-
     /**
-     * 加载
+     * 加载路由
      */
     private void load() {
         List<GatewayRoute> allRoute = null;

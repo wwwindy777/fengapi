@@ -111,6 +111,24 @@ public class InterfaceInfoController {
         }
         return ResultUtils.success(true);
     }
+    /**
+     * 根据id获取接口信息
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/get")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<InterfaceInfo> getInterfaceInfoById(Integer id) {
+        if (id == null || id < 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        InterfaceInfo byId = interfaceInfoService.getById(id);
+        if (byId == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        return ResultUtils.success(byId);
+    }
 
     /**
      * 获取接口列表（后台）
@@ -139,7 +157,6 @@ public class InterfaceInfoController {
      * @return
      */
     @GetMapping("/searchList/vo")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     //TODO：1. 增加分页查询
     public BaseResponse<List<InterfaceInfoVO>> getInterfaceInfoVOList(InterfaceInfoQueryRequest queryRequest) {
         InterfaceInfo interfaceInfoQuery = new InterfaceInfo();

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mulan.fengapi_backend.common.ErrorCode;
 import com.mulan.fengapi_backend.exception.BusinessException;
+import com.mulan.fengapi_backend.model.dto.user.UserUpdateRequest;
 import com.mulan.fengapi_backend.model.entity.User;
 import com.mulan.fengapi_backend.service.UserService;
 import com.mulan.fengapi_backend.mapper.UserMapper;
@@ -21,14 +22,14 @@ import static com.mulan.fengapi_backend.constant.UserConstant.ADMIN_ROLE;
 import static com.mulan.fengapi_backend.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
-* @author wwwwind
-* @description 针对表【user(用户)】的数据库操作Service实现
-* @createDate 2023-03-24 22:10:50
-*/
+ * @author wwwwind
+ * @description 针对表【user(用户)】的数据库操作Service实现
+ * @createDate 2023-03-24 22:10:50
+ */
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService{
+        implements UserService {
 
 
     @Resource
@@ -48,7 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (userAccount.length() < 4) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
-        if (userPassword.length() < 8 || checkPassword.length() < 8) {
+        if (userPassword.length() < 5 || checkPassword.length() < 5) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
         // 密码和校验密码相同
@@ -91,7 +92,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (userAccount.length() < 4) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号错误");
         }
-        if (userPassword.length() < 8) {
+        if (userPassword.length() < 5) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
         }
         // 2. 加密
@@ -109,6 +110,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 3. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
         return user;
+    }
+
+    /**
+     * 校验更新参数
+     *
+     * @param updateRequest
+     */
+    @Override
+    public Boolean updateUser(UserUpdateRequest updateRequest, HttpServletRequest request) {
+        Long id = updateRequest.getId();
+        String userName = updateRequest.getUserName();
+        String userAccount = updateRequest.getUserAccount();
+        String userAvatar = updateRequest.getUserAvatar();
+        //Integer gender = updateRequest.getGender();
+        //String userRole = updateRequest.getUserRole();
+        String userPassword = updateRequest.getUserPassword();
+        //只有当前用户或管理员可以修改
+        User loginUser = getLoginUser(request);
+        if (!loginUser.getId().equals(id) && !isAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        User user = new User();
+        user.setId(id);
+        //校验参数
+        if (StringUtils.isNotBlank(userName) && userName.equals(loginUser.getUserName())){
+            user.setUserName(userName);
+        }
+        if (StringUtils.isNotBlank(userAccount) && userAccount.equals(loginUser.getUserAccount())){
+            user.setUserName(userAccount);
+        }
+        if (StringUtils.isNotBlank(userAvatar) && userAvatar.equals(loginUser.getUserAvatar())){
+            user.setUserName(userAvatar);
+        }
+        if (StringUtils.isNotBlank(userPassword)){
+            String newPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+            if (!newPassword.equals(loginUser.getUserPassword())){
+                user.setUserPassword(newPassword);
+            }
+        }
+        boolean res = this.updateById(user);
+        if (res){
+            this.userLogout(request);
+        }
+        return res;
     }
 
     /**

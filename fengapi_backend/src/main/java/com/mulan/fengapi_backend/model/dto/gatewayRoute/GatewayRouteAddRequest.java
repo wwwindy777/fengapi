@@ -1,8 +1,10 @@
 package com.mulan.fengapi_backend.model.dto.gatewayRoute;
 
+import com.mulan.fengapi_common.model.entity.GatewayRoute;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 添加接口请求
@@ -24,10 +26,20 @@ public class GatewayRouteAddRequest implements Serializable {
     /**
      * 断言
      */
-    private String predicates;
+    private List<GatewayRoute.GatewayPredicateDefinition> predicates;
 
     /**
      * 过滤器
      */
-    private String filters;
+    private List<GatewayRoute.GatewayFilterDefinition> filters;
+
+    /**
+     * order
+     */
+    private Integer routeOrder;
+
+    /**
+     * 接口状态（0-关闭，1-开启）
+     */
+    private Integer status;
 }

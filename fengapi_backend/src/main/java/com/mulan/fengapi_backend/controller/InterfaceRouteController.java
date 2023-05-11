@@ -40,9 +40,7 @@ public class InterfaceRouteController {
         if (addRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        InterfaceRoute interfaceRoute = new InterfaceRoute();
-        BeanUtils.copyProperties(addRequest,interfaceRoute);
-        interfaceRouteService.verifyGatewayRoute(interfaceRoute, true);
+        InterfaceRoute interfaceRoute = interfaceRouteService.genInterfaceRoute(addRequest);
         interfaceRouteService.save(interfaceRoute);
         return ResultUtils.success(interfaceRoute.getId());
     }
@@ -87,15 +85,13 @@ public class InterfaceRouteController {
         if (updateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "id小于0");
         }
-        InterfaceRoute interfaceRoute = new InterfaceRoute();
-        BeanUtils.copyProperties(updateRequest,interfaceRoute);
-        //参数较验
-        interfaceRouteService.verifyGatewayRoute(interfaceRoute, false);
-        //判断该接口信息是否存在
-        InterfaceRoute byId = interfaceRouteService.getById(interfaceRoute.getId());
+        //路由是否存在
+        InterfaceRoute byId = interfaceRouteService.getById(updateRequest.getId());
         if (byId == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
+        //生成更新对象
+        InterfaceRoute interfaceRoute = interfaceRouteService.genInterfaceRoute(updateRequest, byId);
         boolean res = interfaceRouteService.updateById(interfaceRoute);
         if (!res) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "更新失败");
