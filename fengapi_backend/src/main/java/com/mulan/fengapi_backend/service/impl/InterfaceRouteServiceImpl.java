@@ -1,29 +1,27 @@
 package com.mulan.fengapi_backend.service.impl;
 
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Objects;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteUpdateRequest;
-import com.mulan.fengapi_backend.model.entity.InterfaceInfo;
-import com.mulan.fengapi_backend.service.InterfaceInfoService;
-import com.mulan.fengapi_common.model.entity.GatewayRoute.GatewayFilterDefinition;
-import com.mulan.fengapi_common.model.entity.GatewayRoute.GatewayPredicateDefinition;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mulan.fengapi_backend.common.ErrorCode;
 import com.mulan.fengapi_backend.exception.BusinessException;
+import com.mulan.fengapi_backend.mapper.InterfaceInfoMapper;
 import com.mulan.fengapi_backend.mapper.InterfaceRouteMapper;
 import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteAddRequest;
+import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteUpdateRequest;
+import com.mulan.fengapi_backend.model.entity.InterfaceInfo;
 import com.mulan.fengapi_backend.model.entity.InterfaceRoute;
 import com.mulan.fengapi_backend.service.InterfaceRouteService;
+import com.mulan.fengapi_common.model.entity.GatewayRoute.GatewayFilterDefinition;
+import com.mulan.fengapi_common.model.entity.GatewayRoute.GatewayPredicateDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author wwwwind
@@ -35,7 +33,7 @@ public class InterfaceRouteServiceImpl extends ServiceImpl<InterfaceRouteMapper,
         implements InterfaceRouteService {
 
     @Resource
-    InterfaceInfoService interfaceInfoService;
+    InterfaceInfoMapper interfaceInfoMapper;
 
     /**
      * 请求参数校验
@@ -75,7 +73,7 @@ public class InterfaceRouteServiceImpl extends ServiceImpl<InterfaceRouteMapper,
         //接口必须存在
         QueryWrapper<InterfaceInfo> infoQueryWrapper = new QueryWrapper<>();
         infoQueryWrapper.eq("name", routeId);
-        InterfaceInfo one = interfaceInfoService.getOne(infoQueryWrapper);
+        InterfaceInfo one = interfaceInfoMapper.selectOne(infoQueryWrapper);
         if (one == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "接口不存在");
         }

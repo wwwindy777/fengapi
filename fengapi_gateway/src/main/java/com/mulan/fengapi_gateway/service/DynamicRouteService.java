@@ -10,5 +10,5 @@ import reactor.core.publisher.Mono;
 public interface DynamicRouteService {
     String add(GatewayRoute definition);
     String update(GatewayRoute definition);
-    Mono<ResponseEntity<Object>> delete(String id);
+    String delete(String id);
 }

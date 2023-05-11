@@ -74,10 +74,9 @@ public class HandleResponseFilter implements GlobalFilter, Ordered {
                                         try {
                                             Map<String, String> map = ServerWebExchangeUtils.getUriTemplateVariables(exchange);
                                             String userInterfaceInfoId = map.get("userInterfaceInfoId");
-                                            if (userInterfaceInfoId == null){
-                                                throw new RuntimeException("id为空");
+                                            if (userInterfaceInfoId != null){
+                                                rpcUserInterfaceInfoService.invokeCountUpdate(Long.parseLong(userInterfaceInfoId));
                                             }
-                                            rpcUserInterfaceInfoService.invokeCountUpdate(Long.parseLong(userInterfaceInfoId));
                                         } catch (Exception e) {
                                             log.error("invokeCount error", e);
                                         }

@@ -58,6 +58,11 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
         // 取出请求头
         HttpHeaders headers = request.getHeaders();
+        String agent = headers.getFirst("mulan_pass");
+        // 后端的测试请求直接放行
+        if (agent != null && agent.equals("fengapi_master")){
+            return chain.filter(exchange);
+        }
         String interfaceName = headers.getFirst("interfaceName");
         String accessKey = headers.getFirst("accessKey");
         String nonce = headers.getFirst("nonce");
@@ -76,7 +81,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         } catch (Exception e) {
             log.error("getInterfaceInfo error", e);
         }
-        if (interfaceInfo == null) {
+        if (interfaceInfo == null || interfaceInfo.getStatus().equals(0)) {
             return handleNoAuth(response);
         }
         Long interfaceIdLong = interfaceInfo.getId();

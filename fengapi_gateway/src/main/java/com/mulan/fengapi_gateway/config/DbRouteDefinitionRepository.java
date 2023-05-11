@@ -14,8 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 从数据库加载路由
@@ -23,9 +22,10 @@ import java.util.List;
 @Component
 public class DbRouteDefinitionRepository implements RouteDefinitionRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbRouteDefinitionRepository.class);
-    private final List<RouteDefinition> routeDefinitionList = new ArrayList<>();
+    public  final Map<String, RouteDefinition> routes = Collections.synchronizedMap(new LinkedHashMap<>());
     @DubboReference
     RpcGatewayRouteService rpcGatewayRouteService;
+
     @PostConstruct
     public void init() {
         load();
@@ -42,26 +42,36 @@ public class DbRouteDefinitionRepository implements RouteDefinitionRepository {
         } catch (Exception e) {
             LOGGER.error("加载路由失败", e);
         }
-        if (allRoute == null) {
+        if (allRoute == null || allRoute.size() == 0) {
             LOGGER.info("数据库无路由信息");
             return;
         }
-        allRoute.forEach(route -> routeDefinitionList.add(GatewayRouteUtils.assembleRouteDefinition(route)));
-        LOGGER.info("路由配置已加载,加载条数: " + routeDefinitionList.size());
+        allRoute.forEach(route -> routes.put(route.getId(),GatewayRouteUtils.assembleRouteDefinition(route)));
+        LOGGER.info("路由配置已加载,加载条数: " + routes.size());
     }
 
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {
-        return Mono.defer(() -> Mono.error(new NotFoundException("Unsupported operation")));
+        return route.flatMap( r -> {
+            routes.put(r.getId(), r);
+            return Mono.empty();
+        });
     }
 
     @Override
     public Mono<Void> delete(Mono<String> routeId) {
-        return Mono.defer(() -> Mono.error(new NotFoundException("Unsupported operation")));
+        return routeId.flatMap(id -> {
+            if (routes.containsKey(id)) {
+                routes.remove(id);
+                return Mono.empty();
+            }
+            return Mono.defer(() -> Mono.error(new NotFoundException("RouteDefinition not found: "+routeId)));
+        });
     }
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
-        return Flux.fromIterable(routeDefinitionList);
+        Collection<RouteDefinition> values = routes.values();
+        return Flux.fromIterable(values);
     }
 }

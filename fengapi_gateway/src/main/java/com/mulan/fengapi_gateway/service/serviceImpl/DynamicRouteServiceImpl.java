@@ -58,13 +58,9 @@ public class DynamicRouteServiceImpl implements ApplicationEventPublisherAware, 
 
 	//删除路由
 	@Override
-	public Mono<ResponseEntity<Object>> delete(String id) {
-		return this.routeDefinitionWriter.delete(Mono.just(id)).then(Mono.defer(() -> {
-			return Mono.just(ResponseEntity.ok().build());
-		})).onErrorResume((t) -> {
-			return t instanceof NotFoundException;
-		}, (t) -> {
-			return Mono.just(ResponseEntity.notFound().build());
-		});
+	public String delete(String id) {
+		this.routeDefinitionWriter.delete(Mono.just(id)).subscribe();
+		this.applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
+		return "delete success";
 	}
 }

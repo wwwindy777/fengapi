@@ -203,21 +203,8 @@ public class InterfaceInfoController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         long id = idRequest.getId();
-        // 判断是否存在
-        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-        if (oldInterfaceInfo == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        // 如果接口已经是下线状态报错
-        if (oldInterfaceInfo.getStatus().equals(0)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"接口已下线");
-        }
-        // 仅管理员可修改
-        InterfaceInfo interfaceInfo = new InterfaceInfo();
-        interfaceInfo.setId(id);
-        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
-        boolean result = interfaceInfoService.updateById(interfaceInfo);
-        return ResultUtils.success(result);
+        boolean res = interfaceInfoService.offlineInterfaceInfo(id);
+        return ResultUtils.success(res);
     }
     //测试调用
 
