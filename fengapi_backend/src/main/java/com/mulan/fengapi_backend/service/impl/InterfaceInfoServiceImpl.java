@@ -108,6 +108,10 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         if (oldInterfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
+        // 如果接口已经是上线状态报错
+        if (oldInterfaceInfo.getStatus().equals(1)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已上线，请勿重复上线");
+        }
         // 数据库中如果没有该接口路由需要先添加路由
         QueryWrapper<InterfaceRoute> routeQueryWrapper = new QueryWrapper<>();
         routeQueryWrapper.eq("routeId", oldInterfaceInfo.getName());
@@ -134,7 +138,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         if (updateRouteRes <= 0) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "更新路由状态失败");
         }
-        // 修改状态
+        // 修改接口状态
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         interfaceInfo.setId(id);
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
@@ -173,6 +177,34 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         interfaceInfo.setId(id);
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
         return this.updateById(interfaceInfo);
+    }
+
+    /**
+     * 测试接口调用
+     * @param id
+     * @param requestExample
+     * @return
+     */
+    @Override
+    public String testInterfaceInfo(Long id,String requestExample) {
+        if (StringUtils.isBlank(requestExample)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求示例不能为空");
+        }
+        // 判断是否存在该接口
+        InterfaceInfo interfaceInfo = this.getById(id);
+        if (interfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        // 如果接口未上线报错
+        if (interfaceInfo.getStatus().equals(0)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口未上线");
+        }
+        // 测试请求接口
+        String res = TestInterfaceUtils.doInvokeInterfaceTest(interfaceInfo, requestExample);
+        if (res == null){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR,"调用失败");
+        }
+        return res;
     }
 }
 

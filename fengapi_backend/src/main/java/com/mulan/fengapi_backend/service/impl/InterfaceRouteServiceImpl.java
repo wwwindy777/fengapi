@@ -34,24 +34,6 @@ public class InterfaceRouteServiceImpl extends ServiceImpl<InterfaceRouteMapper,
 
     @Resource
     InterfaceInfoMapper interfaceInfoMapper;
-
-    /**
-     * 请求参数校验
-     *
-     * @param interfaceRoute
-     * @param isAdd
-     */
-    @Override
-    public void verifyGatewayRoute(InterfaceRoute interfaceRoute, boolean isAdd) {
-        //以下参数不能为空
-        String routeId = interfaceRoute.getRouteId();
-        String uri = interfaceRoute.getUri();
-        String predicates = interfaceRoute.getPredicates();
-        if (StringUtils.isAnyBlank(routeId, uri, predicates)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-    }
-
     /**
      * 把添加路由请求转化为数据库对象
      *
@@ -94,7 +76,9 @@ public class InterfaceRouteServiceImpl extends ServiceImpl<InterfaceRouteMapper,
             String filterStr = gson.toJson(filters, filterType);
             interfaceRoute.setFilters(filterStr);
         } else {
-            interfaceRoute.setFilters("[]");
+            //给每个接口添加默认的限流过滤器
+            String defaultRateLimiter = "[{\"name\":\"RequestRateLimiter\",\"args\":{\"key-resolver\":\"#{@ipKeyResolver}\",\"redis-rate-limiter.replenishRate\":1,\"redis-rate-limiter.burstCapacity\":1,\"redis-rate-limiter.requestedTokens\":1}}]";
+            interfaceRoute.setFilters(defaultRateLimiter);
         }
         return interfaceRoute;
     }

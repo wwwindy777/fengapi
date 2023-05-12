@@ -9,6 +9,7 @@ import com.mulan.fengapi_backend.exception.BusinessException;
 import com.mulan.fengapi_backend.model.VO.InterfaceInfoVO;
 import com.mulan.fengapi_backend.model.dto.interfaceInfo.InterfaceInfoAddRequest;
 import com.mulan.fengapi_backend.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
+import com.mulan.fengapi_backend.model.dto.interfaceInfo.InterfaceInfoTestRequest;
 import com.mulan.fengapi_backend.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
 import com.mulan.fengapi_backend.model.entity.InterfaceInfo;
 import com.mulan.fengapi_backend.model.entity.User;
@@ -206,6 +207,20 @@ public class InterfaceInfoController {
         boolean res = interfaceInfoService.offlineInterfaceInfo(id);
         return ResultUtils.success(res);
     }
-    //测试调用
-
+    /**
+     * 测试调用
+     *
+     * @param testRequest
+     * @return
+     */
+    @PostMapping("/test")
+    public BaseResponse<String> testInterfaceInfo(@RequestBody InterfaceInfoTestRequest testRequest) {
+        if (testRequest == null || testRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = testRequest.getId();
+        String requestExample = testRequest.getRequestExample();
+        String res = interfaceInfoService.testInterfaceInfo(id,requestExample);
+        return ResultUtils.success(res);
+    }
 }

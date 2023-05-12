@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface InterfaceRouteService extends IService<InterfaceRoute> {
 
-    void verifyGatewayRoute(InterfaceRoute interfaceRoute, boolean isAdd);
     InterfaceRoute genInterfaceRoute(GatewayRouteAddRequest addRequest);
     InterfaceRoute genInterfaceRoute(GatewayRouteUpdateRequest updateRequest,InterfaceRoute oldRoute);
 }

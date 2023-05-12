@@ -16,4 +16,5 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
     InterfaceInfoVO getInterfaceInfoVO(InterfaceInfo info);
     boolean onlineInterfaceInfo(Long id);
     boolean offlineInterfaceInfo(Long id);
+    String testInterfaceInfo(Long id,String requestExample);
 }
