@@ -13,7 +13,6 @@ import com.mulan.fengapi_backend.model.dto.interfaceInfo.InterfaceInfoTestReques
 import com.mulan.fengapi_backend.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
 import com.mulan.fengapi_backend.model.entity.InterfaceInfo;
 import com.mulan.fengapi_backend.model.entity.User;
-import com.mulan.fengapi_backend.model.enums.InterfaceInfoStatusEnum;
 import com.mulan.fengapi_backend.service.InterfaceInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;

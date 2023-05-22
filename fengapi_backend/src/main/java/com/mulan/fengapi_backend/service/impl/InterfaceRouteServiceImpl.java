@@ -128,7 +128,7 @@ public class InterfaceRouteServiceImpl extends ServiceImpl<InterfaceRouteMapper,
             }.getType();
             String filterStr = gson.toJson(filters, filterType);
             if (!filterStr.equals(oldRoute.getFilters())) {
-                interfaceRoute.setPredicates(filterStr);
+                interfaceRoute.setFilters(filterStr);
             }
         }
         return interfaceRoute;

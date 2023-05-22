@@ -23,7 +23,6 @@ public class RouteController {
      **/
 	@PostMapping("/add")
 	public String add(@RequestBody GatewayRoute gatewayDefinition) {
-		System.out.println("add = " + gatewayDefinition.toString());
 		String flag = "fail";
 		try {
 			flag = this.dynamicRouteService.add(gatewayDefinition);
@@ -51,7 +50,6 @@ public class RouteController {
      **/
 	@PostMapping("/update")
 	public String update(@RequestBody GatewayRoute gatewayDefinition) {
-		System.out.println("update = " + gatewayDefinition.toString());
 		return this.dynamicRouteService.update(gatewayDefinition);
 	}
 }

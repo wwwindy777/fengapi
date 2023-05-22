@@ -16,7 +16,7 @@ import java.util.UUID;
 
 /**
  * 请求响应日志 AOP
- * @author @author wwwwind
+ * @author wwwwind
  **/
 @Aspect
 @Component

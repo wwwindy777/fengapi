@@ -1,6 +1,7 @@
 package com.mulan.fengapi_backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mulan.fengapi_backend.annotation.AuthCheck;
 import com.mulan.fengapi_backend.common.BaseResponse;
@@ -9,11 +10,15 @@ import com.mulan.fengapi_backend.common.ErrorCode;
 import com.mulan.fengapi_backend.common.ResultUtils;
 import com.mulan.fengapi_backend.constant.UserConstant;
 import com.mulan.fengapi_backend.exception.BusinessException;
+import com.mulan.fengapi_backend.model.VO.GatewayRouteAddVO;
 import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteAddRequest;
 import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteQueryRequest;
 import com.mulan.fengapi_backend.model.dto.gatewayRoute.GatewayRouteUpdateRequest;
 import com.mulan.fengapi_backend.model.entity.InterfaceRoute;
 import com.mulan.fengapi_backend.service.InterfaceRouteService;
+import com.mulan.fengapi_backend.util.InterfaceRouteUtils;
+import com.mulan.fengapi_common.model.entity.GatewayRoute;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -100,6 +105,31 @@ public class InterfaceRouteController {
     }
 
     /**
+     * 根据RouteId获取路由
+     * @param id
+     * @return
+     */
+    @GetMapping("/get")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<GatewayRouteAddVO> getRouteById(String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<InterfaceRoute> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("routeId",id);
+        InterfaceRoute interfaceRoute = interfaceRouteService.getOne(queryWrapper);
+        if (interfaceRoute == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "路由不存在");
+        }
+        GatewayRoute gatewayRoute = InterfaceRouteUtils.genGatewayRoute(interfaceRoute);
+        // 又封装一层主要是为了前端更新路由传id
+        GatewayRouteAddVO gatewayRouteAddVO = new GatewayRouteAddVO();
+        BeanUtils.copyProperties(gatewayRoute,gatewayRouteAddVO);
+        gatewayRouteAddVO.setDbId(interfaceRoute.getId());
+        return ResultUtils.success(gatewayRouteAddVO);
+    }
+
+    /**
      * 获取路由列表
      *
      * @param queryRequest
@@ -107,7 +137,7 @@ public class InterfaceRouteController {
      */
     @GetMapping("/searchList")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<InterfaceRoute>> getRouteList(GatewayRouteQueryRequest queryRequest) {
+    public BaseResponse<IPage<GatewayRoute>> getRouteList(GatewayRouteQueryRequest queryRequest) {
         InterfaceRoute interfaceRoute = new InterfaceRoute();
         if (queryRequest != null) {
             BeanUtils.copyProperties(queryRequest, interfaceRoute);
@@ -116,8 +146,9 @@ public class InterfaceRouteController {
         long current = queryRequest.getCurrentPage();
         long size = queryRequest.getPageSize();
         QueryWrapper<InterfaceRoute> queryWrapper = new QueryWrapper<>(interfaceRoute);
-        Page<InterfaceRoute> page = interfaceRouteService.page(new Page<>(current,size), queryWrapper);
-        return ResultUtils.success(page);
+        //分页中的数据库对象转换为路由实体
+        IPage<InterfaceRoute> page = interfaceRouteService.page(new Page<>(current, size), queryWrapper);
+        IPage<GatewayRoute> gatewayRouteIPage = page.convert(InterfaceRouteUtils::genGatewayRoute);
+        return ResultUtils.success(gatewayRouteIPage);
     }
-
 }
